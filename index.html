@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jupiter Swap App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000; /* Black background */
+            color: #f0f0f0; /* Light text color */
+            padding: 30px;
+            line-height: 1.6;
+            max-width: 600px; /* Center content a bit */
+            margin: 20px auto;
+        }
+        h1 {
+            font-family: 'Instrument Serif', serif;
+            color: #ffffff; /* Pure white for heading */
+            font-size: 3.4em; /* Increased font size */
+            margin-bottom: 0.5em;
+            text-align: center; /* Center heading */
+            font-weight: 600; /* Ensure heading is bold */
+        }
+        p {
+            text-align: center; /* Center paragraph */
+            margin-bottom: 25px;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 12px;
+            border: 1px solid #444; /* Darker border */
+            border-radius: 5px;
+            background-color: #1a1a1a; /* Slightly lighter dark background */
+            min-height: 40px; /* Ensure it has some height */
+            text-align: center;
+        }
+        .success {
+            border-color: #28a745; /* Green border */
+            background-color: #1c3d23; /* Dark green background */
+            color: #c3e6cb; /* Light green text */
+        }
+        .error {
+            border-color: #dc3545; /* Red border */
+            background-color: #4d1a2a; /* Dark red background */
+            color: #f5c6cb; /* Light red text */
+        }
+        button {
+            display: block; /* Make button block level */
+            width: 150px; /* Fixed width */
+            margin: 0 auto 20px auto; /* Center button */
+            padding: 12px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #0d6efd; /* Bootstrap blue */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+        button:hover:not(:disabled) {
+            background-color: #0b5ed7;
+        }
+        button:disabled {
+            background-color: #495057; /* Darker gray when disabled */
+            color: #adb5bd;
+            cursor: not-allowed;
+        }
+        a {
+            color: #6cb2eb; /* Lighter blue for links */
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>JUPITER TOKEN SWAP</h1>
+    <p>Click the button to perform a swap (0.1 SOL to USDC).</p>
+    <button id="swapButton">Perform Swap</button>
+    <div id="status">Swap status will appear here...</div>
+
+    <script>
+        const swapButton = document.getElementById('swapButton');
+        const statusDiv = document.getElementById('status');
+
+        swapButton.addEventListener('click', async () => {
+            statusDiv.textContent = 'Initiating swap...';
+            statusDiv.className = '';
+            swapButton.disabled = true;
+
+            try {
+                const response = await fetch('/api/swap');
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    statusDiv.innerHTML = `Swap successful! ✅<br>Transaction ID: <a href="${result.explorerUrl}" target="_blank">${result.txid}</a>`;
+                    statusDiv.className = 'success';
+                } else {
+                    statusDiv.textContent = `Swap failed ❌: ${result.details || result.error || 'Unknown error'}`;
+                    statusDiv.className = 'error';
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                statusDiv.textContent = `Swap failed ❌: Network error or server issue. Check console.`;
+                statusDiv.className = 'error';
+            } finally {
+                swapButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html> 

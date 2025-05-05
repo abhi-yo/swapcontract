@@ -2,7 +2,7 @@
 
 This is a basic Node.js web application built with Express that provides a simple interface to perform a token swap on the Solana blockchain using the Jupiter Aggregator API.
 
-![Screenshot of the App](ss.png)
+![Screenshot of the App](public/ss.png)
 
 ## Functionality
 
